@@ -23,9 +23,10 @@
           run: Invoke-ScriptAnalyzer -Path "**/*.ps1" -Recurse -Outvariable issues
   
         - name: Report PSScriptAnalyzer issues
-          if: $issues.Count -gt 0
+          if: ${{ issues.Count }} -gt 0 
           run: |
             Write-Host "PSScriptAnalyzer found $($issues.Count) issues:"
             $issues | Format-Table
             exit 1  # Fail the job if issues are found
+
   
