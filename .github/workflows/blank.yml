@@ -1,29 +1,28 @@
 ---
-  name: Lint
-  
-  on:  
-    push:
-    pull_request: 
-  
-  jobs:
-    build:
-      name: Lint
-      runs-on: ubuntu-latest
-  
-      permissions:
-        contents: read
-        packages: read
-        statuses: write
-  
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-  
-        - name: Super-linter
-          uses: super-linter/super-linter@v5.7.2  
-          env:
-            DEFAULT_BRANCH: main
-            GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+name: Lint
 
+on:  
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v5.7.2
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
