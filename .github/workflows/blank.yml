@@ -1,28 +1,31 @@
 ---
-name: Lint
-
-on:  
-  push:
-  pull_request:
-
-jobs:
-  build:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Super-linter
-        uses: super-linter/super-linter@v5.7.2
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  name: Lint PowerShell
+  
+  on:
+    push:
+      branches: [main]  # Trigger on pushes to the main branch
+    pull_request:
+      branches: [main]  # Trigger on pull requests targeting the main branch
+  
+  jobs:
+    build:
+      name: Lint PowerShell Scripts
+      runs-on: windows-latest  # Use a Windows runner for compatibility
+  
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        - name: Install PSScriptAnalyzer
+          run: Install-Module -Name PSScriptAnalyzer -Scope CurrentUser
+  
+        - name: Run PSScriptAnalyzer
+          run: Invoke-ScriptAnalyzer -Path "**/*.ps1" -Recurse -Outvariable issues
+  
+        - name: Report PSScriptAnalyzer issues
+          if: $issues.Count -gt 0
+          run: |
+            Write-Host "PSScriptAnalyzer found $($issues.Count) issues:"
+            $issues | Format-Table
+            exit 1  # Fail the job if issues are found
+  
